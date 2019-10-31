@@ -85,6 +85,7 @@ CUser::CUser(const CString& sUsername)
       m_bDenySetBindHost(true),
       m_bDenySetIdent(true),
       m_bDenySetRealName(true),
+      m_bDenySetQuitMsg(true),
       m_bAutoClearChanBuffer(true),
       m_bAutoClearQueryBuffer(true),
       m_bBeingDeleted(false),
@@ -172,6 +173,7 @@ bool CUser::ParseConfig(CConfig* pConfig, CString& sError) {
         {"denysetbindhost", &CUser::SetDenySetBindHost},
 	{"denysetident", &CUser::SetDenySetIdent},
 	{"denysetrealname", &CUser::SetDenySetRealName},
+	{"denysetquitmsg", &CUser::SetDenySetQuitMsg},
         {"denysetvhost", &CUser::SetDenySetBindHost},
         {"appendtimestamp", &CUser::SetTimestampAppend},
         {"prependtimestamp", &CUser::SetTimestampPrepend},
@@ -809,6 +811,7 @@ bool CUser::Clone(const CUser& User, CString& sErrorRet, bool bCloneNetworks) {
     SetDenySetBindHost(User.DenySetBindHost());
     SetDenySetIdent(User.DenySetIdent());
     SetDenySetRealName(User.DenySetRealName());
+    SetDenySetQuitMsg(User.DenySetQuitMsg());
     SetAuthOnlyViaModule(User.AuthOnlyViaModule());
     SetTimestampAppend(User.GetTimestampAppend());
     SetTimestampPrepend(User.GetTimestampPrepend());
@@ -976,6 +979,7 @@ CConfig CUser::ToConfig() const {
     config.AddKeyValuePair("DenySetBindHost", CString(DenySetBindHost()));
     config.AddKeyValuePair("DenySetIdent", CString(DenySetIdent()));
     config.AddKeyValuePair("DenySetRealName", CString(DenySetRealName()));
+    config.AddKeyValuePair("DenySetQuitMsg", CString(DenySetQuitMsg()));
     config.AddKeyValuePair("TimestampFormat", GetTimestampFormat());
     config.AddKeyValuePair("AppendTimestamp", CString(GetTimestampAppend()));
     config.AddKeyValuePair("PrependTimestamp", CString(GetTimestampPrepend()));
@@ -1272,6 +1276,7 @@ void CUser::SetAdmin(bool b) { m_bAdmin = b; }
 void CUser::SetDenySetBindHost(bool b) { m_bDenySetBindHost = b; }
 void CUser::SetDenySetIdent(bool b) { m_bDenySetIdent = b; }
 void CUser::SetDenySetRealName(bool b) { m_bDenySetRealName = b; }
+void CUser::SetDenySetQuitMsg(bool b) { m_bDenySetQuitMsg = b; }
 void CUser::SetDefaultChanModes(const CString& s) { m_sDefaultChanModes = s; }
 void CUser::SetClientEncoding(const CString& s) {
     m_sClientEncoding = CZNC::Get().FixupEncoding(s);
@@ -1407,6 +1412,7 @@ bool CUser::IsAdmin() const { return m_bAdmin; }
 bool CUser::DenySetBindHost() const { return m_bDenySetBindHost; }
 bool CUser::DenySetIdent() const { return m_bDenySetIdent; }
 bool CUser::DenySetRealName() const { return m_bDenySetRealName; }
+bool CUser::DenySetQuitMsg() const { return m_bDenySetQuitMsg; }
 bool CUser::MultiClients() const { return m_bMultiClients; }
 bool CUser::AuthOnlyViaModule() const { return m_bAuthOnlyViaModule; }
 const CString& CUser::GetStatusPrefix() const { return m_sStatusPrefix; }

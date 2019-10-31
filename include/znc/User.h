@@ -139,6 +139,7 @@ class CUser : private CCoreTranslationMixin {
     void SetDenySetBindHost(bool b);
     void SetDenySetIdent(bool b);
     void SetDenySetRealName(bool b);
+    void SetDenySetQuitMsg(bool b);
     bool SetStatusPrefix(const CString& s);
     void SetDefaultChanModes(const CString& s);
     void SetClientEncoding(const CString& s);
@@ -196,6 +197,7 @@ class CUser : private CCoreTranslationMixin {
     bool DenySetBindHost() const;
     bool DenySetIdent() const;
     bool DenySetRealName() const;
+    bool DenySetQuitMsg() const;
     bool MultiClients() const;
     bool AuthOnlyViaModule() const;
     const CString& GetStatusPrefix() const;
@@ -260,6 +262,7 @@ class CUser : private CCoreTranslationMixin {
     bool m_bDenySetBindHost;
     bool m_bDenySetIdent;
     bool m_bDenySetRealName;
+    bool m_bDenySetQuitMsg;
     bool m_bAutoClearChanBuffer;
     bool m_bAutoClearQueryBuffer;
     bool m_bBeingDeleted;

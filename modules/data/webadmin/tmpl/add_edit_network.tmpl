@@ -63,13 +63,13 @@
 				</div>
 				<div style="clear: both;"></div>
 				<? ENDIF ?>
-
+                                <? IF QuitMsgEdit ?>
 				<div class="subsection">
 					<div class="inputlabel"><label for="quitmsg"><? FORMAT "Quit Message:" ?></label></div>
 					<input id="quitmsg" type="text" name="quitmsg" value="<? VAR QuitMsg ?>" class="full" maxlength="256"
 						   title="<? FORMAT "You may define a Message shown, when you quit IRC." ?>"/>
 				</div>
-
+                                <? ENDIF ?>
 				<div class="subsection">
 					<div class="inputlabel"><? FORMAT "Active:" ?></div>
 					<div class="checkbox"><input type="checkbox" name="doconnect" id="doconnect_checkbox"<? IF IRCConnectEnabled ?> checked="checked"<? ENDIF ?> />

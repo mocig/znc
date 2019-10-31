@@ -96,6 +96,7 @@ class CAdminMod : public CModule {
                 {"DenySetBindHost", boolean},
 		{"DenySetIdent", boolean},
 		{"DenySetRealName", boolean},
+		{"DenySetQuitMsg", boolean},
                 {"DefaultChanModes", str},
                 {"QuitMsg", str},
                 {"ChanBufferSize", integer},
@@ -245,6 +246,8 @@ class CAdminMod : public CModule {
             PutModule("DenySetIdent = " + CString(pUser->DenySetIdent()));
 	else if (sVar == "denysetrealname")
             PutModule("DenySetRealName = " + CString(pUser->DenySetRealName()));
+	else if (sVar == "denysetquitmsg")
+            PutModule("DenySetQuitMsg = " + CString(pUser->DenySetQuitMsg()));
         else if (sVar == "defaultchanmodes")
             PutModule("DefaultChanModes = " + pUser->GetDefaultChanModes());
         else if (sVar == "quitmsg")
@@ -398,6 +401,14 @@ class CAdminMod : public CModule {
                 bool b = sValue.ToBool();
                 pUser->SetDenySetRealName(b);
                 PutModule("DenySetRealName = " + CString(b));
+            } else {
+                PutModule(t_s("Access denied!"));
+            }
+        } else if (sVar == "denysetquitmsg") {
+            if (GetUser()->IsAdmin()) {
+                bool b = sValue.ToBool();
+                pUser->SetDenySetQuitMsg(b);
+                PutModule("DenySetQuitMsg = " + CString(b));
             } else {
                 PutModule(t_s("Access denied!"));
             }
@@ -654,7 +665,7 @@ class CAdminMod : public CModule {
         } else if (sVar.Equals("ident")) {
             if (!pUser->DenySetIdent() || GetUser()->IsAdmin()) {
                 if (sValue.Equals(pNetwork->GetIdent())) {
-                    PutModule(t_s("This bind host is already set!"));
+                    PutModule(t_s("This ident is already set!"));
                     return;
                 }
 
@@ -702,8 +713,17 @@ class CAdminMod : public CModule {
             PutModule("Encoding = " + pNetwork->GetEncoding());
 #endif
         } else if (sVar.Equals("quitmsg")) {
-            pNetwork->SetQuitMsg(sValue);
-            PutModule("QuitMsg = " + pNetwork->GetQuitMsg());
+	    if (!pUser->DenySetQuitMsg() || GetUser()->IsAdmin()) {
+                if (sValue.Equals(pNetwork->GetQuitMsg())) {
+                    PutModule(t_s("This quitmsg is already set!"));
+                    return;
+                }
+
+                pNetwork->SetQuitMsg(sValue);
+                PutModule("QuitMsg = " + pNetwork->GetQuitMsg());
+            } else {
+                PutModule(t_s("Access denied!"));
+            }
         } else if (sVar.Equals("trustallcerts")) {
             bool b = sValue.ToBool();
             pNetwork->SetTrustAllCerts(b);

@@ -110,13 +110,14 @@
 				</div>
 				<div style="clear: both;"></div>
 				<? ENDIF ?>
-
+                                <? IF QuitMsgEdit ?>
 				<div class="subsection">
 					<div class="inputlabel"><label for="quitmsg"><? FORMAT "Quit Message:" ?></label></div>
 					<input type="text" name="quitmsg" value="<? VAR QuitMsg ?>" class="full" maxlength="256"
 						   title="<? FORMAT "You may define a Message shown, when you quit IRC." ?>"/>
 				</div>
 				<div style="clear: both;"></div>
+                                <? ENDIF ?>
 			</div>
 		</div>
 	</div>
