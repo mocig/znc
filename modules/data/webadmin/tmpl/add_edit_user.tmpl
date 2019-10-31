@@ -76,11 +76,13 @@
 						   title="<? FORMAT "Your secondary nickname, if the first is not available on IRC." ?>"/>
 				</div>
 				<div style="clear: both;"></div>
+                                <? IF IdentEdit ?>
 				<div class="subsection">
 					<div class="inputlabel"><label for="ident"><? FORMAT "Ident:" ?></label></div>
 					<input id="ident" type="text" name="ident" value="<? VAR Ident ?>" class="half" maxlength="128"
 						   title="<? FORMAT "The Ident is sent to server as username." ?>"/>
 				</div>
+                                <? ENDIF ?>
 				<div class="subsection">
 					<div class="inputlabel"><label for="statusprefix"><? FORMAT "Status Prefix:" ?></label></div>
 					<input id="statusprefix" type="text" name="statusprefix" value="<? VAR StatusPrefix ?>" class="half" maxlength="5"

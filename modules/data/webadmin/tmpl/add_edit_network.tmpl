@@ -42,11 +42,13 @@
 						   title="<? FORMAT "Your secondary nickname, if the first is not available on IRC." ?>"/>
 				</div>
 				<div style="clear: both;"></div>
+                                <? IF IdentEdit ?>
 				<div class="subsection">
 					<div class="inputlabel"><label for="ident"><? FORMAT "Ident:" ?></label></div>
 					<input id="ident" type="text" name="ident" value="<? VAR Ident ?>" class="half" maxlength="128"
 						   title="<? FORMAT "Your ident." ?>"/>
 				</div>
+                                <? ENDIF ?>
                 <div class="subsection">
 					<div class="inputlabel"><label for="realname"><? FORMAT "Realname:" ?></label></div>
 					<input id="realname" type="text" name="realname" value="<? VAR RealName ?>" class="full" maxlength="256"

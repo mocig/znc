@@ -94,6 +94,7 @@ class CAdminMod : public CModule {
                 {"MultiClients", boolean},
                 {"DenyLoadMod", boolean},
                 {"DenySetBindHost", boolean},
+		{"DenySetIdent", boolean},
                 {"DefaultChanModes", str},
                 {"QuitMsg", str},
                 {"ChanBufferSize", integer},
@@ -239,6 +240,8 @@ class CAdminMod : public CModule {
             PutModule("DenyLoadMod = " + CString(pUser->DenyLoadMod()));
         else if (sVar == "denysetbindhost")
             PutModule("DenySetBindHost = " + CString(pUser->DenySetBindHost()));
+	else if (sVar == "denysetident")
+            PutModule("DenySetIdent = " + CString(pUser->DenySetIdent()));
         else if (sVar == "defaultchanmodes")
             PutModule("DefaultChanModes = " + pUser->GetDefaultChanModes());
         else if (sVar == "quitmsg")
@@ -324,8 +327,17 @@ class CAdminMod : public CModule {
             pUser->SetAltNick(sValue);
             PutModule("AltNick = " + sValue);
         } else if (sVar == "ident") {
-            pUser->SetIdent(sValue);
-            PutModule("Ident = " + sValue);
+            if (!pUser->DenySetIdent() || GetUser()->IsAdmin()) {
+                if (sValue.Equals(pUser->GetIdent())) {
+                    PutModule(t_s("This ident is already set!"));
+                    return;
+                }
+
+                pUser->SetIdent(sValue);
+		PutModule("Ident = " + sValue);
+            } else {
+                PutModule(t_s("Access denied!"));
+            }
         } else if (sVar == "realname") {
             pUser->SetRealName(sValue);
             PutModule("RealName = " + sValue);
@@ -358,6 +370,14 @@ class CAdminMod : public CModule {
                 bool b = sValue.ToBool();
                 pUser->SetDenySetBindHost(b);
                 PutModule("DenySetBindHost = " + CString(b));
+            } else {
+                PutModule(t_s("Access denied!"));
+            }
+	} else if (sVar == "denysetident") {
+            if (GetUser()->IsAdmin()) {
+                bool b = sValue.ToBool();
+                pUser->SetDenySetIdent(b);
+                PutModule("DenySetIdent = " + CString(b));
             } else {
                 PutModule(t_s("Access denied!"));
             }
@@ -612,8 +632,18 @@ class CAdminMod : public CModule {
             pNetwork->SetAltNick(sValue);
             PutModule("AltNick = " + pNetwork->GetAltNick());
         } else if (sVar.Equals("ident")) {
+            if (!pUser->DenySetIdent() || GetUser()->IsAdmin()) {
+                if (sValue.Equals(pNetwork->GetIdent())) {
+                    PutModule(t_s("This bind host is already set!"));
+                    return;
+                }
+
+
             pNetwork->SetIdent(sValue);
             PutModule("Ident = " + pNetwork->GetIdent());
+            } else {
+                PutModule(t_s("Access denied!"));
+            }
         } else if (sVar.Equals("realname")) {
             pNetwork->SetRealName(sValue);
             PutModule("RealName = " + pNetwork->GetRealName());

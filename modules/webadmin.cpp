@@ -249,9 +249,15 @@ class CWebAdminMod : public CModule {
             pNewUser->SetStatusPrefix(sArg);
         }
         sArg = WebSock.GetParam("ident");
-        if (!sArg.empty()) {
-            pNewUser->SetIdent(sArg);
-        }
+	// To change Ident be admin or don't have DenySetIdent
+	if (spSession->IsAdmin() || !spSession->GetUser()->DenySetIdent()) {
+            if (!sArg.empty()) {
+                pNewUser->SetIdent(sArg);
+            }
+	} else if (pUser) {
+	    pNewUser->SetIdent(pUser->GetIdent());
+	}
+
         sArg = WebSock.GetParam("realname");
         if (!sArg.empty()) {
             pNewUser->SetRealName(sArg);
@@ -353,6 +359,8 @@ class CWebAdminMod : public CModule {
             pNewUser->SetDenyLoadMod(WebSock.GetParam("denyloadmod").ToBool());
             pNewUser->SetDenySetBindHost(
                 WebSock.GetParam("denysetbindhost").ToBool());
+	    pNewUser->SetDenySetIdent(
+                WebSock.GetParam("denysetident").ToBool());
             pNewUser->SetAuthOnlyViaModule(
                 WebSock.GetParam("authonlyviamodule").ToBool());
             sArg = WebSock.GetParam("maxnetworks");
@@ -360,6 +368,7 @@ class CWebAdminMod : public CModule {
         } else if (pUser) {
             pNewUser->SetDenyLoadMod(pUser->DenyLoadMod());
             pNewUser->SetDenySetBindHost(pUser->DenySetBindHost());
+	    pNewUser->SetDenySetIdent(pUser->DenySetIdent());
             pNewUser->SetAuthOnlyViaModule(pUser->AuthOnlyViaModule());
             pNewUser->SetMaxNetworks(pUser->MaxNetworks());
         }
@@ -977,7 +986,14 @@ class CWebAdminMod : public CModule {
 
             Tmpl["Nick"] = pNetwork->GetNick();
             Tmpl["AltNick"] = pNetwork->GetAltNick();
-            Tmpl["Ident"] = pNetwork->GetIdent();
+
+	    // To change Ident be admin or don't have DenySetIdent
+	    if (spSession->IsAdmin() ||
+                !spSession->GetUser()->DenySetIdent()) {
+		Tmpl["IdentEdit"] = "true";
+                Tmpl["Ident"] = pNetwork->GetIdent();
+	    }
+
             Tmpl["RealName"] = pNetwork->GetRealName();
 
             Tmpl["QuitMsg"] = pNetwork->GetQuitMsg();
@@ -1092,13 +1108,15 @@ class CWebAdminMod : public CModule {
             }
         }
 
-        CString sArg;
-
         pNetwork->SetNick(WebSock.GetParam("nick"));
         pNetwork->SetAltNick(WebSock.GetParam("altnick"));
-        pNetwork->SetIdent(WebSock.GetParam("ident"));
-        pNetwork->SetRealName(WebSock.GetParam("realname"));
 
+        // To change Ident be admin or don't have DenySetIdent
+        if (spSession->IsAdmin() || !spSession->GetUser()->DenySetIdent()){
+	    pNetwork->SetIdent(WebSock.GetParam("ident"));
+        }
+
+	pNetwork->SetRealName(WebSock.GetParam("realname"));
         pNetwork->SetQuitMsg(WebSock.GetParam("quitmsg"));
 
         pNetwork->SetIRCConnectEnabled(WebSock.GetParam("doconnect").ToBool());
@@ -1106,7 +1124,6 @@ class CWebAdminMod : public CModule {
         pNetwork->SetTrustAllCerts(WebSock.GetParam("trustallcerts").ToBool());
         pNetwork->SetTrustPKI(WebSock.GetParam("trustpki").ToBool());
 
-        sArg = WebSock.GetParam("bindhost");
         // To change BindHosts be admin or don't have DenySetBindHost
         if (spSession->IsAdmin() || !spSession->GetUser()->DenySetBindHost()) {
             pNetwork->SetBindHost(WebSock.GetParam("bindhost"));
@@ -1336,7 +1353,14 @@ class CWebAdminMod : public CModule {
             Tmpl["Nick"] = pUser->GetNick();
             Tmpl["AltNick"] = pUser->GetAltNick();
             Tmpl["StatusPrefix"] = pUser->GetStatusPrefix();
-            Tmpl["Ident"] = pUser->GetIdent();
+
+            // To change Ident be admin or don't have DenySetIdent
+            if (spSession->IsAdmin() ||
+                !spSession->GetUser()->DenySetIdent()) {
+                Tmpl["IdentEdit"] = "true";
+		Tmpl["Ident"] = pUser->GetIdent();
+            }
+
             Tmpl["RealName"] = pUser->GetRealName();
             Tmpl["QuitMsg"] = pUser->GetQuitMsg();
             Tmpl["DefaultChanModes"] = pUser->GetDefaultChanModes();
@@ -1562,15 +1586,22 @@ class CWebAdminMod : public CModule {
                 if (pUser->DenySetBindHost()) {
                     o11["Checked"] = "true";
                 }
+
+		CTemplate& o12 = Tmpl.AddRow("OptionLoop");
+                o12["Name"] = "denysetident";
+                o12["DisplayName"] = t_s("Deny SetIdent");
+                if (pUser->DenySetIdent()) {
+                    o12["Checked"] = "true";
+                }
             }
 
-            CTemplate& o12 = Tmpl.AddRow("OptionLoop");
-            o12["Name"] = "autoclearquerybuffer";
-            o12["DisplayName"] = t_s("Auto Clear Query Buffer");
-            o12["Tooltip"] =
+            CTemplate& o13 = Tmpl.AddRow("OptionLoop");
+            o13["Name"] = "autoclearquerybuffer";
+            o13["DisplayName"] = t_s("Auto Clear Query Buffer");
+            o13["Tooltip"] =
                 t_s("Automatically Clear Query Buffer After Playback");
             if (pUser->AutoClearQueryBuffer()) {
-                o12["Checked"] = "true";
+                o13["Checked"] = "true";
             }
 
             FOR_EACH_MODULE(i, pUser) {
