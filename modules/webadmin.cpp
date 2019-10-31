@@ -377,6 +377,8 @@ class CWebAdminMod : public CModule {
                 WebSock.GetParam("denysetrealname").ToBool());
             pNewUser->SetDenySetQuitMsg(
                 WebSock.GetParam("denysetquitmsg").ToBool());
+	    pNewUser->SetDenySetConn(
+                WebSock.GetParam("denysetconn").ToBool());
             pNewUser->SetAuthOnlyViaModule(
                 WebSock.GetParam("authonlyviamodule").ToBool());
             sArg = WebSock.GetParam("maxnetworks");
@@ -387,6 +389,7 @@ class CWebAdminMod : public CModule {
 	    pNewUser->SetDenySetIdent(pUser->DenySetIdent());
 	    pNewUser->SetDenySetRealName(pUser->DenySetRealName());
 	    pNewUser->SetDenySetQuitMsg(pUser->DenySetQuitMsg());
+	    pNewUser->SetDenySetConn(pUser->DenySetConn());
             pNewUser->SetAuthOnlyViaModule(pUser->AuthOnlyViaModule());
             pNewUser->SetMaxNetworks(pUser->MaxNetworks());
         }
@@ -1654,15 +1657,22 @@ class CWebAdminMod : public CModule {
                     o14["Checked"] = "true";
                 }
 
+		CTemplate& o15 = Tmpl.AddRow("OptionLoop");
+                o15["Name"] = "denysetconn";
+                o15["DisplayName"] = t_s("Deny Edit Connections");
+                if (pUser->DenySetConn()) {
+                    o15["Checked"] = "true";
+                }
+
             }
 
-            CTemplate& o15 = Tmpl.AddRow("OptionLoop");
-            o15["Name"] = "autoclearquerybuffer";
-            o15["DisplayName"] = t_s("Auto Clear Query Buffer");
-            o15["Tooltip"] =
+            CTemplate& o16 = Tmpl.AddRow("OptionLoop");
+            o16["Name"] = "autoclearquerybuffer";
+            o16["DisplayName"] = t_s("Auto Clear Query Buffer");
+            o16["Tooltip"] =
                 t_s("Automatically Clear Query Buffer After Playback");
             if (pUser->AutoClearQueryBuffer()) {
-                o15["Checked"] = "true";
+                o16["Checked"] = "true";
             }
 
             FOR_EACH_MODULE(i, pUser) {

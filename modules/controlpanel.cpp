@@ -97,6 +97,7 @@ class CAdminMod : public CModule {
 		{"DenySetIdent", boolean},
 		{"DenySetRealName", boolean},
 		{"DenySetQuitMsg", boolean},
+		{"DenySetConn", boolean},
                 {"DefaultChanModes", str},
                 {"QuitMsg", str},
                 {"ChanBufferSize", integer},
@@ -248,6 +249,8 @@ class CAdminMod : public CModule {
             PutModule("DenySetRealName = " + CString(pUser->DenySetRealName()));
 	else if (sVar == "denysetquitmsg")
             PutModule("DenySetQuitMsg = " + CString(pUser->DenySetQuitMsg()));
+	else if (sVar == "denysetconn")
+            PutModule("DenySetConn = " + CString(pUser->DenySetConn()));
         else if (sVar == "defaultchanmodes")
             PutModule("DefaultChanModes = " + pUser->GetDefaultChanModes());
         else if (sVar == "quitmsg")
@@ -409,6 +412,14 @@ class CAdminMod : public CModule {
                 bool b = sValue.ToBool();
                 pUser->SetDenySetQuitMsg(b);
                 PutModule("DenySetQuitMsg = " + CString(b));
+            } else {
+                PutModule(t_s("Access denied!"));
+            }
+	} else if (sVar == "denysetconn") {
+            if (GetUser()->IsAdmin()) {
+                bool b = sValue.ToBool();
+                pUser->SetDenySetConn(b);
+                PutModule("DenySetConn = " + CString(b));
             } else {
                 PutModule(t_s("Access denied!"));
             }
