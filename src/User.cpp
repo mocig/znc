@@ -82,7 +82,7 @@ CUser::CUser(const CString& sUsername)
       m_bMultiClients(true),
       m_bDenyLoadMod(false),
       m_bAdmin(false),
-      m_bDenySetBindHost(false),
+      m_bDenySetBindHost(true),
       m_bAutoClearChanBuffer(true),
       m_bAutoClearQueryBuffer(true),
       m_bBeingDeleted(false),
