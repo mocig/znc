@@ -259,9 +259,15 @@ class CWebAdminMod : public CModule {
 	}
 
         sArg = WebSock.GetParam("realname");
-        if (!sArg.empty()) {
-            pNewUser->SetRealName(sArg);
+	// To change Real Name be admin or don't have DenySetRealName
+        if (spSession->IsAdmin() || !spSession->GetUser()->DenySetRealName()) {
+            if (!sArg.empty()) {
+                pNewUser->SetRealName(sArg);
+            }
+	} else if (pUser) {
+            pNewUser->SetRealName(pUser->GetRealName());
         }
+
         sArg = WebSock.GetParam("quitmsg");
         if (!sArg.empty()) {
             pNewUser->SetQuitMsg(sArg);
@@ -361,6 +367,8 @@ class CWebAdminMod : public CModule {
                 WebSock.GetParam("denysetbindhost").ToBool());
 	    pNewUser->SetDenySetIdent(
                 WebSock.GetParam("denysetident").ToBool());
+	    pNewUser->SetDenySetRealName(
+                WebSock.GetParam("denysetrealname").ToBool());
             pNewUser->SetAuthOnlyViaModule(
                 WebSock.GetParam("authonlyviamodule").ToBool());
             sArg = WebSock.GetParam("maxnetworks");
@@ -369,6 +377,7 @@ class CWebAdminMod : public CModule {
             pNewUser->SetDenyLoadMod(pUser->DenyLoadMod());
             pNewUser->SetDenySetBindHost(pUser->DenySetBindHost());
 	    pNewUser->SetDenySetIdent(pUser->DenySetIdent());
+	    pNewUser->SetDenySetRealName(pUser->DenySetRealName());
             pNewUser->SetAuthOnlyViaModule(pUser->AuthOnlyViaModule());
             pNewUser->SetMaxNetworks(pUser->MaxNetworks());
         }
@@ -994,7 +1003,12 @@ class CWebAdminMod : public CModule {
                 Tmpl["Ident"] = pNetwork->GetIdent();
 	    }
 
-            Tmpl["RealName"] = pNetwork->GetRealName();
+	    // To change RealName be admin or don't have DenySetRealName
+            if (spSession->IsAdmin() ||
+                !spSession->GetUser()->DenySetRealName()) {
+		Tmpl["RealNameEdit"] = "true";
+                Tmpl["RealName"] = pNetwork->GetRealName();
+            }
 
             Tmpl["QuitMsg"] = pNetwork->GetQuitMsg();
 
@@ -1116,7 +1130,11 @@ class CWebAdminMod : public CModule {
 	    pNetwork->SetIdent(WebSock.GetParam("ident"));
         }
 
-	pNetwork->SetRealName(WebSock.GetParam("realname"));
+	// To change RealName be admin or don't have DenySetRealName
+        if (spSession->IsAdmin() || !spSession->GetUser()->DenySetRealName()){
+	    pNetwork->SetRealName(WebSock.GetParam("realname"));
+	}
+
         pNetwork->SetQuitMsg(WebSock.GetParam("quitmsg"));
 
         pNetwork->SetIRCConnectEnabled(WebSock.GetParam("doconnect").ToBool());
@@ -1361,7 +1379,13 @@ class CWebAdminMod : public CModule {
 		Tmpl["Ident"] = pUser->GetIdent();
             }
 
-            Tmpl["RealName"] = pUser->GetRealName();
+	    // To change Ident be admin or don't have DenySetIdent
+            if (spSession->IsAdmin() ||
+                !spSession->GetUser()->DenySetRealName()) {
+		Tmpl["RealNameEdit"] = "true";
+                Tmpl["RealName"] = pUser->GetRealName();
+	    }
+
             Tmpl["QuitMsg"] = pUser->GetQuitMsg();
             Tmpl["DefaultChanModes"] = pUser->GetDefaultChanModes();
             Tmpl["ChanBufferSize"] = CString(pUser->GetChanBufferSize());
@@ -1593,15 +1617,23 @@ class CWebAdminMod : public CModule {
                 if (pUser->DenySetIdent()) {
                     o12["Checked"] = "true";
                 }
+
+		CTemplate& o13 = Tmpl.AddRow("OptionLoop");
+                o13["Name"] = "denysetrealname";
+                o13["DisplayName"] = t_s("Deny Set Real Name");
+                if (pUser->DenySetIdent()) {
+                    o13["Checked"] = "true";
+                }
+
             }
 
-            CTemplate& o13 = Tmpl.AddRow("OptionLoop");
-            o13["Name"] = "autoclearquerybuffer";
-            o13["DisplayName"] = t_s("Auto Clear Query Buffer");
-            o13["Tooltip"] =
+            CTemplate& o14 = Tmpl.AddRow("OptionLoop");
+            o14["Name"] = "autoclearquerybuffer";
+            o14["DisplayName"] = t_s("Auto Clear Query Buffer");
+            o14["Tooltip"] =
                 t_s("Automatically Clear Query Buffer After Playback");
             if (pUser->AutoClearQueryBuffer()) {
-                o13["Checked"] = "true";
+                o14["Checked"] = "true";
             }
 
             FOR_EACH_MODULE(i, pUser) {

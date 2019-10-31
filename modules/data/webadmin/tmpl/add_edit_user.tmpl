@@ -89,13 +89,14 @@
 						   title="<? FORMAT "The prefix for the status and module queries." ?>"/>
 				</div>
 				<div style="clear: both;"></div>
+                                <? IF RealNameEdit ?>
 				<div class="subsection">
 					<div class="inputlabel"><label for="realname"><? FORMAT "Realname:" ?></label></div>
 					<input id="realname" type="text" name="realname" value="<? VAR RealName ?>" class="full" maxlength="256"
 						   title="<? FORMAT "Your real name." ?>"/>
 				</div>
 				<div style="clear: both;"></div>
-
+                                <? ENDIF ?>
 				<? IF BindHostEdit ?>
 				<div class="subsection">
 					<div class="inputlabel"><label for="bindhost"><? FORMAT "BindHost:" ?></label></div>
