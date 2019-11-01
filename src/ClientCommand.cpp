@@ -536,6 +536,12 @@ void CClient::UserCommand(CString& sLine) {
         PutStatus(t_f("Total: {1}, Joined: {2}, Detached: {3}, Disabled: {4}")(
             vChans.size(), uNumJoined, uNumDetached, uNumDisabled));
     } else if (sCommand.Equals("ADDNETWORK")) {
+	// Only if admin or !DenySetConn
+	if (!m_pUser->IsAdmin() && m_pUser->DenySetConn()) {
+            PutStatus(t_s("Permission denied"));
+            return;
+        }
+
         if (!m_pUser->IsAdmin() && !m_pUser->HasSpaceForNewNetwork()) {
             PutStatus(t_s(
                 "Network number limit reached. Ask an admin to increase the "
@@ -568,6 +574,12 @@ void CClient::UserCommand(CString& sLine) {
         }
     } else if (sCommand.Equals("DELNETWORK")) {
         CString sNetwork = sLine.Token(1);
+
+        // Only if admin or !DenySetConn
+        if (!m_pUser->IsAdmin() && m_pUser->DenySetConn()) {
+            PutStatus(t_s("Permission denied"));
+            return;
+        }
 
         if (sNetwork.empty()) {
             PutStatus(t_s("Usage: DelNetwork <name>"));
@@ -755,6 +767,12 @@ void CClient::UserCommand(CString& sLine) {
             return;
         }
 
+        // Only if admin or !DenySetConn
+        if (!m_pUser->IsAdmin() && m_pUser->DenySetConn()) {
+            PutStatus(t_s("Permission denied"));
+            return;
+        }
+
         if (m_pNetwork->AddServer(sLine.Token(1, true))) {
             PutStatus(t_s("Server added"));
         } else {
@@ -780,6 +798,12 @@ void CClient::UserCommand(CString& sLine) {
 
         if (!m_pNetwork->HasServers()) {
             PutStatus(t_s("You don't have any servers added."));
+            return;
+        }
+
+        // Only if admin or !DenySetConn
+        if (!m_pUser->IsAdmin() && m_pUser->DenySetConn()) {
+            PutStatus(t_s("Permission denied"));
             return;
         }
 
@@ -1302,6 +1326,7 @@ void CClient::UserCommand(CString& sLine) {
                 "ClearUserBindHost instead"));
             return;
         }
+	
         m_pNetwork->SetBindHost("");
         PutStatus(t_s("Bind host cleared for this network."));
     } else if (sCommand.Equals("CLEARUSERBINDHOST") &&

@@ -121,18 +121,34 @@ function serverlist_init($) {
 			row.remove();
 			serialize();
 		}
-		row.append(
-			$("<td/>").append($("<input/>").attr({"type":"text"})
-				.addClass("servers_row_host").val(host)),
-			$("<td/>").append($("<input/>").attr({"type":"number"})
-				.addClass("servers_row_port").val(port)),
-			$("<td/>").append($("<input/>").attr({"type":"checkbox"})
-				.addClass("servers_row_ssl").prop("checked", ssl)),
-			$("<td/>").append($("<input/>").attr({"type":"text"})
-				.addClass("servers_row_pass").val(pass)),
-			$("<td/>").append($("<input/>").attr({"type":"button"})
-				.val("X").click(delete_row))
-		);
+		switch (DenySetConn){
+		case false:
+			row.append(
+		    		$("<td/>").append($("<input/>").attr({"type":"text"})
+					.addClass("servers_row_host").val(host)),
+				$("<td/>").append($("<input/>").attr({"type":"number"})
+					.addClass("servers_row_port").val(port)),
+				$("<td/>").append($("<input/>").attr({"type":"checkbox"})
+					.addClass("servers_row_ssl").prop("checked", ssl)),
+				$("<td/>").append($("<input/>").attr({"type":"text"})
+					.addClass("servers_row_pass").val(pass)),
+				$("<td/>").append($("<input/>").attr({"type":"button"})
+					.val("X").click(delete_row))
+			); 
+			break;
+		case true:
+			row.append(
+                                $("<td/>").append($("<input/>").attr({"type":"text","readonly":true})
+                                        .addClass("servers_row_host").val(host)),
+                                $("<td/>").append($("<input/>").attr({"type":"number","readonly":true})
+                                        .addClass("servers_row_port").val(port)),
+                                $("<td/>").append($("<input/>").attr({"type":"checkbox","disabled":true})
+                                        .addClass("servers_row_ssl").prop("checked", ssl)),
+                                $("<td/>").append($("<input/>").attr({"type":"text","readonly":true})
+                                        .addClass("servers_row_pass").val(pass))
+			);
+			break;
+		}
 		$("input", row).change(serialize);
 		$("#servers_tbody").append(row);
 	}

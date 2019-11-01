@@ -3,6 +3,11 @@
 <? AddRow CSSLoop HREF=/modfiles/global/webadmin/webadmin.css ?>
 <? INC Header.tmpl ?>
 
+<script>
+// Global Variable to controll other JS included
+var DenySetConn = <? VAR DenySetConn ?>;
+</script>
+
 <div class="section">
 	<? IF Edit ?>
 		<? SETBLOCK ClientConnectHint_Password ?><? VAR Username ?>/<? VAR Name ?>:<? FORMAT "&lt;password&gt;" ?><? ENDSETBLOCK ?>
@@ -20,17 +25,20 @@
 		<input type="hidden" name="submitted" value="1" />
 		<input type="hidden" name="user" value="<? VAR Username ?>" />
 		<input type="hidden" name="network" value="<? VAR Name ?>" />
-
+		<? IF !NameEdit ?>
+		<input type="hidden" name="name" value="<? VAR Name ?>" />
+		<? ENDIF ?>
 		<h3><? FORMAT "Network Info" ?></h3>
         <span class="info"><? FORMAT "Nick, AltNick, Ident, RealName, BindHost can be left empty to use the value from the user." ?></span>
 		<div class="sectionbg">
 			<div class="sectionbody">
+                                <? IF NameEdit ?>
 				<div class="subsection">
 					<div class="inputlabel"><label for="name"><? FORMAT "Network Name:" ?></label></div>
 					<input id="name" type="text" name="name" value="<? VAR Name ?>" class="half" maxlength="128"
 						   title="<? FORMAT "The name of the IRC network." ?>"/>
 				</div>
-
+                                <? ENDIF ?>
             	<div class="subsection">
 					<div class="inputlabel"><label for="nick"><? FORMAT "Nickname:" ?></label></div>
 					<input id="nick" type="text" name="nick" value="<? VAR Nick ?>" class="half" maxlength="128"
@@ -105,12 +113,16 @@
 									<th><? FORMAT "Port" ?></th>
 									<th><? FORMAT "SSL" ?></th>
 									<th><? FORMAT "Password" ?></th>
+									<? IF !DenySetConn ?>
 									<th/>
+									<? ENDIF ?>
 								</tr>
 							</thead>
 							<tbody id="servers_tbody"/>
 						</table>
+						<? IF !DenySetConn ?>
 						<input type="button" value="Add" id="servers_add"/>
+						<? ENDIF ?>
 					</div>
 				</div>
 				<script type="text/javascript">serverlist_init(jQuery);</script>

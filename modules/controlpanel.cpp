@@ -1130,6 +1130,12 @@ class CAdminMod : public CModule {
             return;
         }
 
+        // Only allowed when admin or !DenySetConn
+	if (!GetUser()->IsAdmin() && pUser->DenySetConn()){
+	    PutStatus(t_s("Permission denied"));
+	    return;
+	}
+
         if (!GetUser()->IsAdmin() && !pUser->HasSpaceForNewNetwork()) {
             PutStatus(
                 t_s("Network number limit reached. Ask an admin to increase "
@@ -1172,6 +1178,12 @@ class CAdminMod : public CModule {
 
         if (sNetwork.empty()) {
             PutModule(t_s("Usage: DelNetwork [user] network"));
+            return;
+        }
+
+        // Only allowed when admin or !DenySetConn
+        if (!GetUser()->IsAdmin() && pUser->DenySetConn()){
+            PutStatus(t_s("Permission denied"));
             return;
         }
 
@@ -1253,6 +1265,12 @@ class CAdminMod : public CModule {
         CUser* pUser = FindUser(sUsername);
         if (!pUser) return;
 
+        // Only allowed when admin or !DenySetConn
+        if (!GetUser()->IsAdmin() && pUser->DenySetConn()){
+            PutStatus(t_s("Permission denied"));
+            return;
+        }
+
         CIRCNetwork* pNetwork = FindNetwork(pUser, sNetwork);
         if (!pNetwork) {
             return;
@@ -1283,6 +1301,12 @@ class CAdminMod : public CModule {
 
         CUser* pUser = FindUser(sUsername);
         if (!pUser) return;
+
+        // Only allowed when admin or !DenySetConn
+        if (!GetUser()->IsAdmin() && pUser->DenySetConn()){
+            PutStatus(t_s("Permission denied"));
+            return;
+        }
 
         CIRCNetwork* pNetwork = FindNetwork(pUser, sNetwork);
         if (!pNetwork) {

@@ -543,13 +543,20 @@ class CWebAdminMod : public CModule {
                 (!spSession->GetUser() || spSession->GetUser() != pUser)) {
                 return false;
             }
+	    // No user
+            if(!pUser){
+                WebSock.PrintErrorPage(t_s("No such user"));
+                return true;
+            }
 
-            if (pUser) {
+            // Allow only if admin or not DenySetConn
+	    if(spSession->IsAdmin() || !spSession->GetUser()->DenySetConn()){
                 return NetworkPage(WebSock, Tmpl, pUser);
             }
 
-            WebSock.PrintErrorPage(t_s("No such user"));
+	    WebSock.PrintErrorPage(t_s("No permission"));
             return true;
+
         } else if (sPageName == "editnetwork") {
             CIRCNetwork* pNetwork = SafeGetNetworkFromParam(WebSock);
 
@@ -564,7 +571,6 @@ class CWebAdminMod : public CModule {
                 WebSock.PrintErrorPage(t_s("No such user or network"));
                 return true;
             }
-
             return NetworkPage(WebSock, Tmpl, pNetwork->GetUser(), pNetwork);
 
         } else if (sPageName == "delnetwork") {
@@ -581,7 +587,14 @@ class CWebAdminMod : public CModule {
                 return false;
             }
 
-            return DelNetwork(WebSock, pUser, Tmpl);
+	    // Allow only if admin or not DenySetConn
+            if(spSession->IsAdmin() || !spSession->GetUser()->DenySetConn()){
+                return DelNetwork(WebSock, pUser, Tmpl);
+            }
+
+	    WebSock.PrintErrorPage(t_s("No permission"));
+            return true;
+
         } else if (sPageName == "editchan") {
             CIRCNetwork* pNetwork = SafeGetNetworkFromParam(WebSock);
 
@@ -912,6 +925,12 @@ class CWebAdminMod : public CModule {
         std::shared_ptr<CWebSession> spSession = WebSock.GetSession();
         Tmpl.SetFile("add_edit_network.tmpl");
 
+        // Only allowed when edit, is admin or not DenySetConn
+	if (!pNetwork && (pUser->DenySetConn() ||!spSession->IsAdmin())){
+	    WebSock.PrintErrorPage(t_s("Permission denied"));
+	    return true;
+	}
+
         if (!pNetwork && !spSession->IsAdmin() &&
             !pUser->HasSpaceForNewNetwork()) {
             WebSock.PrintErrorPage(t_s(
@@ -1003,8 +1022,13 @@ class CWebAdminMod : public CModule {
             breadUser["URL"] =
                 GetWebPath() + "edituser?user=" + pUser->GetUsername();
 
-            Tmpl["Name"] = pNetwork->GetName();
+	    // To change name be admin or don't have DenySetConn
+	    if (spSession->IsAdmin() ||
+               !spSession->GetUser()->DenySetConn()) {
+               Tmpl["NameEdit"] = "true";
+            }
 
+	    Tmpl["Name"] = pNetwork->GetName();
             Tmpl["Nick"] = pNetwork->GetNick();
             Tmpl["AltNick"] = pNetwork->GetAltNick();
 
@@ -1028,6 +1052,11 @@ class CWebAdminMod : public CModule {
 		Tmpl["QuitMsgEdit"] = "true";
                 Tmpl["QuitMsg"] = pNetwork->GetQuitMsg();
             }
+
+            // Set Template var to know if we're DenySetConn
+	    Tmpl["DenySetConn"] =
+                spSession->IsAdmin() || !spSession->GetUser()->DenySetConn()
+		? "false" : "true";
 
             Tmpl["FloodProtection"] =
                 CString(CIRCSock::IsFloodProtected(pNetwork->GetFloodRate()));
@@ -1115,27 +1144,34 @@ class CWebAdminMod : public CModule {
             return true;
         }
 
-        CString sName = WebSock.GetParam("name").Trim_n();
+	CString sName = WebSock.GetParam("name").Trim_n();
         if (sName.empty()) {
-            WebSock.PrintErrorPage(t_s("Network name is a required argument"));
+            WebSock.PrintErrorPage(
+                t_s("Network name is a required argument")
+            );
             return true;
         }
-        if (!pNetwork || pNetwork->GetName() != sName) {
-            CString sNetworkAddError;
-            CIRCNetwork* pOldNetwork = pNetwork;
-            pNetwork = pUser->AddNetwork(sName, sNetworkAddError);
-            if (!pNetwork) {
-                WebSock.PrintErrorPage(sNetworkAddError);
-                return true;
-            }
-            if (pOldNetwork) {
-                for (CModule* pModule : pOldNetwork->GetModules()) {
-                    CString sPath = pUser->GetUserPath() + "/networks/" +
-                                    sName + "/moddata/" + pModule->GetModName();
-                    pModule->MoveRegistry(sPath);
+
+	// Processing parameter name be admin or !DenySetConn
+	if (spSession->IsAdmin() || !spSession->GetUser()->DenySetConn()){
+            if (!pNetwork || pNetwork->GetName() != sName) {
+                CString sNetworkAddError;
+                CIRCNetwork* pOldNetwork = pNetwork;
+                pNetwork = pUser->AddNetwork(sName, sNetworkAddError);
+                if (!pNetwork) {
+                    WebSock.PrintErrorPage(sNetworkAddError);
+                    return true;
                 }
-                pNetwork->Clone(*pOldNetwork, false);
-                pUser->DeleteNetwork(pOldNetwork->GetName());
+                if (pOldNetwork) {
+                    for (CModule* pModule : pOldNetwork->GetModules()) {
+                        CString sPath = pUser->GetUserPath() + "/networks/" +
+                                        sName + "/moddata/" + 
+					pModule->GetModName();
+                        pModule->MoveRegistry(sPath);
+                    }
+                    pNetwork->Clone(*pOldNetwork, false);
+                    pUser->DeleteNetwork(pOldNetwork->GetName());
+                }
             }
         }
 
@@ -1195,10 +1231,13 @@ class CWebAdminMod : public CModule {
 
         VCString vsArgs;
 
-        pNetwork->DelServers();
-        WebSock.GetRawParam("servers").Split("\n", vsArgs);
-        for (const CString& sServer : vsArgs) {
-            pNetwork->AddServer(sServer.Trim_n());
+	// Process servers be admin or !DenySetConn
+        if (spSession->IsAdmin() || !spSession->GetUser()->DenySetConn()) {
+            pNetwork->DelServers();
+            WebSock.GetRawParam("servers").Split("\n", vsArgs);
+            for (const CString& sServer : vsArgs) {
+                pNetwork->AddServer(sServer.Trim_n());
+            }
         }
 
         WebSock.GetRawParam("fingerprints").Split("\n", vsArgs);
@@ -1430,9 +1469,18 @@ class CWebAdminMod : public CModule {
                 l["Host"] = sHost;
             }
 
+	    // Show Add link when admin or not have DenySetConn
+	    if (spSession->IsAdmin() ||
+               !spSession->GetUser()->DenySetConn()){
+	       Tmpl["ConnEdit"] = "true";
+	    }
+
             const vector<CIRCNetwork*>& vNetworks = pUser->GetNetworks();
             for (const CIRCNetwork* pNetwork : vNetworks) {
                 CTemplate& l = Tmpl.AddRow("NetworkLoop");
+		// Show DEL link or not. Need admin or no DenySetConn
+		l["ShowDel"] = !spSession->GetUser()->DenySetConn()
+		    || spSession->IsAdmin() ? "true" : "false";
                 l["Name"] = pNetwork->GetName();
                 l["Username"] = pUser->GetUsername();
                 l["Clients"] = CString(pNetwork->GetClients().size());
