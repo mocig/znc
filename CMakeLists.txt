@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2004-2019 ZNC, see the NOTICE file for details.
+# Copyright (C) 2004-2020 ZNC, see the NOTICE file for details.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -15,7 +15,7 @@
 #
 
 cmake_minimum_required(VERSION 3.1)
-project(ZNC VERSION 1.8.0)
+project(ZNC VERSION 1.8.0 LANGUAGES CXX)
 set(ZNC_VERSION 1.8.x)
 set(append_git_version true)
 set(alpha_version "") # e.g. "-rc1"
@@ -196,14 +196,19 @@ if (WANT_PYTHON)
 				message(FATAL_ERROR "Invalid value of WANT_PYTHON_VERSION")
 			endif()
 		endif()
-		# Compatibility with pkg-config variables
-		set(Python3_LDFLAGS "${Python3_LIBRARIES}")
+		if (Python3_FOUND AND Python3_VERSION VERSION_LESS 3.3)
+			message(STATUS "Python too old, need at least 3.3")
+			set(Python3_FOUND OFF)
+		else()
+			# Compatibility with pkg-config variables
+			set(Python3_LDFLAGS "${Python3_LIBRARIES}")
+		endif()
 	endif()
 	if (NOT Python3_FOUND AND WANT_PYTHON_VERSION MATCHES "^python")
 		# Since python 3.8, -embed is required for embedding.
-		pkg_check_modules(Python3 "${WANT_PYTHON_VERSION}-embed >= 3.0")
+		pkg_check_modules(Python3 "${WANT_PYTHON_VERSION}-embed >= 3.3")
 		if (NOT Python3_FOUND)
-			pkg_check_modules(Python3 "${WANT_PYTHON_VERSION} >= 3.0")
+			pkg_check_modules(Python3 "${WANT_PYTHON_VERSION} >= 3.3")
 		endif()
 	endif()
 	if (NOT Python3_FOUND)

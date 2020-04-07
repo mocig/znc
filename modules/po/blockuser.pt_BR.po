@@ -3,12 +3,10 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: crowdin.com\n"
 "X-Crowdin-Project: znc-bouncer\n"
 "X-Crowdin-Language: pt-BR\n"
 "X-Crowdin-File: /master/modules/po/blockuser.pot\n"
 "Project-Id-Version: znc-bouncer\n"
-"Last-Translator: Various people\n"
 "Language-Team: Portuguese, Brazilian\n"
 "Language: pt_BR\n"
 
@@ -19,10 +17,12 @@ msgstr ""
 #: blockuser.cpp:23
 msgid "Your account has been disabled. Contact your administrator."
 msgstr ""
+"A sua conta foi desativada. Entre em contato com o administrador do sistema "
+"para mais informações."
 
 #: blockuser.cpp:29
 msgid "List blocked users"
-msgstr ""
+msgstr "Listar usuários bloqueados"
 
 #: blockuser.cpp:31 blockuser.cpp:33
 msgid "<user>"
@@ -30,11 +30,11 @@ msgstr ""
 
 #: blockuser.cpp:31
 msgid "Block a user"
-msgstr ""
+msgstr "Bloquear usuário"
 
 #: blockuser.cpp:33
 msgid "Unblock a user"
-msgstr ""
+msgstr "Desbloquear usuário"
 
 #: blockuser.cpp:55
 msgid "Could not block {1}"
@@ -42,7 +42,7 @@ msgstr ""
 
 #: blockuser.cpp:76
 msgid "Access denied"
-msgstr ""
+msgstr "Acesso negado"
 
 #: blockuser.cpp:85
 msgid "No users are blocked"
@@ -50,7 +50,7 @@ msgstr ""
 
 #: blockuser.cpp:88
 msgid "Blocked users:"
-msgstr ""
+msgstr "Usuários bloqueados:"
 
 #: blockuser.cpp:100
 msgid "Usage: Block <user>"
@@ -78,7 +78,7 @@ msgstr ""
 
 #: blockuser.cpp:127
 msgid "This user is not blocked"
-msgstr ""
+msgstr "Este usuário não está bloqueado"
 
 #: blockuser.cpp:155
 msgid "Couldn't block {1}"
