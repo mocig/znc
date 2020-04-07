@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2019 ZNC, see the NOTICE file for details.
+ * Copyright (C) 2004-2020 ZNC, see the NOTICE file for details.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -1234,6 +1234,8 @@ bool CClient::OnTextMessage(CTextMessage& Message) {
         }
 
         if (sTarget.TrimPrefix(m_pUser->GetStatusPrefix())) {
+            EchoMessage(Message);
+
             if (sTarget.Equals("status")) {
                 CString sMsg = Message.GetText();
                 UserCommand(sMsg);

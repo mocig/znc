@@ -5,12 +5,10 @@ msgstr ""
 "Plural-Forms: nplurals=4; plural=((n%10==1 && n%100!=11) ? 0 : ((n%10 >= 2 "
 "&& n%10 <=4 && (n%100 < 12 || n%100 > 14)) ? 1 : ((n%10 == 0 || (n%10 >= 5 "
 "&& n%10 <=9)) || (n%100 >= 11 && n%100 <= 14)) ? 2 : 3));\n"
-"X-Generator: crowdin.com\n"
 "X-Crowdin-Project: znc-bouncer\n"
 "X-Crowdin-Language: ru\n"
 "X-Crowdin-File: /master/src/po/znc.pot\n"
 "Project-Id-Version: znc-bouncer\n"
-"Last-Translator: Various people\n"
 "Language-Team: Russian\n"
 "Language: ru_RU\n"
 
@@ -153,29 +151,29 @@ msgstr "Не могу подключиться к IRC ({1}). Пытаюсь ещ
 msgid "Disconnected from IRC ({1}). Reconnecting..."
 msgstr "Отключён от IRC ({1}). Переподключаюсь..."
 
-#: IRCSock.cpp:1308
+#: IRCSock.cpp:1314
 msgid "If you trust this certificate, do /znc AddTrustedServerFingerprint {1}"
 msgstr ""
 "Если вы доверяете этому сертификату, введите /znc "
 "AddTrustedServerFingerprint {1}"
 
-#: IRCSock.cpp:1325
+#: IRCSock.cpp:1323
 msgid "IRC connection timed out.  Reconnecting..."
 msgstr "Подключение IRC завершилось по тайм-ауту. Переподключаюсь..."
 
-#: IRCSock.cpp:1337
+#: IRCSock.cpp:1335
 msgid "Connection Refused.  Reconnecting..."
 msgstr "В соединении отказано. Переподключаюсь..."
 
-#: IRCSock.cpp:1345
+#: IRCSock.cpp:1343
 msgid "Received a too long line from the IRC server!"
 msgstr "От IRC-сервера получена слишком длинная строка!"
 
-#: IRCSock.cpp:1449
+#: IRCSock.cpp:1447
 msgid "No free nick available"
 msgstr "Не могу найти свободный ник"
 
-#: IRCSock.cpp:1457
+#: IRCSock.cpp:1455
 msgid "No free nick found"
 msgstr "Не могу найти свободный ник"
 
@@ -286,11 +284,11 @@ msgstr[1] "Отцепляю {1} канала"
 msgstr[2] "Отцепляю {1} каналов"
 msgstr[3] "Отцепляю {1} каналов"
 
-#: Chan.cpp:671
+#: Chan.cpp:678
 msgid "Buffer Playback..."
 msgstr "Воспроизведение буфера..."
 
-#: Chan.cpp:709
+#: Chan.cpp:716
 msgid "Playback Complete."
 msgstr "Воспроизведение завершено."
 
@@ -1711,25 +1709,25 @@ msgctxt "helpcmd|Restart|desc"
 msgid "Restart ZNC"
 msgstr ""
 
-#: Socket.cpp:334
+#: Socket.cpp:342
 msgid "Can't resolve server hostname"
 msgstr ""
 
-#: Socket.cpp:341
+#: Socket.cpp:349
 msgid ""
 "Can't resolve bind hostname. Try /znc ClearBindHost and /znc "
 "ClearUserBindHost"
 msgstr ""
 
-#: Socket.cpp:346
+#: Socket.cpp:354
 msgid "Server address is IPv4-only, but bindhost is IPv6-only"
 msgstr ""
 
-#: Socket.cpp:355
+#: Socket.cpp:363
 msgid "Server address is IPv6-only, but bindhost is IPv4-only"
 msgstr ""
 
-#: Socket.cpp:513
+#: Socket.cpp:521
 msgid "Some socket reached its max buffer limit and was closed!"
 msgstr ""
 

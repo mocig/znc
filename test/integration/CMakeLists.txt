@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2004-2016 ZNC, see the NOTICE file for details.
+# Copyright (C) 2004-2020 ZNC, see the NOTICE file for details.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -15,7 +15,7 @@
 #
 
 cmake_minimum_required(VERSION 3.0)
-project(ZNCIntegrationTest)
+project(ZNCIntegrationTest LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED true)

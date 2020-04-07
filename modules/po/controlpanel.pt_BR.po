@@ -3,24 +3,22 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: crowdin.com\n"
 "X-Crowdin-Project: znc-bouncer\n"
 "X-Crowdin-Language: pt-BR\n"
 "X-Crowdin-File: /master/modules/po/controlpanel.pot\n"
 "Project-Id-Version: znc-bouncer\n"
-"Last-Translator: Various people\n"
 "Language-Team: Portuguese, Brazilian\n"
 "Language: pt_BR\n"
 
 #: controlpanel.cpp:51 controlpanel.cpp:64
 msgctxt "helptable"
 msgid "Type"
-msgstr ""
+msgstr "Tipo"
 
 #: controlpanel.cpp:52 controlpanel.cpp:66
 msgctxt "helptable"
 msgid "Variables"
-msgstr ""
+msgstr "Variáveis"
 
 #: controlpanel.cpp:78
 msgid "String"
@@ -105,7 +103,7 @@ msgstr ""
 
 #: controlpanel.cpp:405
 msgid "Password has been changed!"
-msgstr ""
+msgstr "A senha foi alterada!"
 
 #: controlpanel.cpp:413
 msgid "Timeout can't be less than 30 seconds!"
@@ -117,7 +115,7 @@ msgstr ""
 
 #: controlpanel.cpp:495
 msgid "Supported languages: {1}"
-msgstr ""
+msgstr "Idiomas suportados: {1}"
 
 #: controlpanel.cpp:519
 msgid "Usage: GetNetwork <variable> [username] [network]"
@@ -195,17 +193,17 @@ msgstr ""
 #: controlpanel.cpp:891 controlpanel.cpp:903 controlpanel.cpp:905
 msgctxt "listusers"
 msgid "IsAdmin"
-msgstr ""
+msgstr "Administrador"
 
 #: controlpanel.cpp:892 controlpanel.cpp:906
 msgctxt "listusers"
 msgid "Nick"
-msgstr ""
+msgstr "Apelido"
 
 #: controlpanel.cpp:893 controlpanel.cpp:907
 msgctxt "listusers"
 msgid "AltNick"
-msgstr ""
+msgstr "Apelido alternativo"
 
 #: controlpanel.cpp:894 controlpanel.cpp:908
 msgctxt "listusers"
@@ -219,11 +217,11 @@ msgstr ""
 
 #: controlpanel.cpp:903 controlpanel.cpp:1143
 msgid "No"
-msgstr ""
+msgstr "Não"
 
 #: controlpanel.cpp:905 controlpanel.cpp:1135
 msgid "Yes"
-msgstr ""
+msgstr "Sim"
 
 #: controlpanel.cpp:919 controlpanel.cpp:988
 msgid "Error: You need to have admin rights to add new users!"

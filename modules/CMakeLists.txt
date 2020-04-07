@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2004-2019 ZNC, see the NOTICE file for details.
+# Copyright (C) 2004-2020 ZNC, see the NOTICE file for details.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -90,8 +90,6 @@ foreach(modpath ${all_modules})
 		continue()
 	endif()
 
-	list(APPEND actual_modules "${modpath}")
-
 	set(modenabled true)
 
 	if(moddisable_${mod})
@@ -109,14 +107,16 @@ foreach(modpath ${all_modules})
 	if(modenabled)
 		if(modtype STREQUAL "cpp")
 			add_cxx_module("${mod}" "${modpath}")
-		endif()
-		if(modtype STREQUAL "pm")
+		elseif(modtype STREQUAL "pm")
 			add_perl_module("${mod}" "${modpath}")
-		endif()
-		if(modtype STREQUAL "py")
+		elseif(modtype STREQUAL "py")
 			add_python_module("${mod}" "${modpath}")
+		else()
+			continue()
 		endif()
 	endif()
+
+	list(APPEND actual_modules "${modpath}")
 endforeach()
 
 if(HAVE_I18N)
